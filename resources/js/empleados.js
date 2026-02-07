@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
+    // Al hacer click en "Generar QR"
     const btnGenerarQR = document.getElementById("btn-generar-qr");
     if (btnGenerarQR) {
         btnGenerarQR.addEventListener("click", function () {
@@ -23,6 +24,16 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
+/**
+ * Alerta de confirmación para realizar una acción.
+ *
+ * @param form Formulario que se va a enviar si el usuario confirma la acción
+ *
+ * @author Henry Pérez
+ * @version 1.0
+ * @since 05-02-2026
+ *
+ */
 function alertaConfirmacion(form) {
     Swal.fire({
         title: "¿Estás seguro?",
@@ -40,6 +51,14 @@ function alertaConfirmacion(form) {
     });
 }
 
+/**
+ * Mostrar mensajes flash de éxito o error utilizando SweetAlert.
+ *
+ * @author Henry Pérez
+ * @version 1.0
+ * @since 05-02-2026
+ *
+ */
 function mostrarFlashMensajes() {
     if (!window.flashMessages) return;
 
@@ -63,6 +82,16 @@ function mostrarFlashMensajes() {
     }
 }
 
+/**
+ * Alerta de confirmación para realizar una acción.
+ *
+ * @param idsEmpleados IDs de empleados seleccionados.
+ *
+ * @author Henry Pérez
+ * @version 1.0
+ * @since 05-02-2026
+ *
+ */
 function generarQR(idsEmpleados) {
     console.log("seleccionados: ", idsEmpleados);
 
@@ -102,6 +131,14 @@ function generarQR(idsEmpleados) {
         });
 }
 
+/**
+ * Obtiene los IDs de los empleados seleccionados mediante checkboxes.
+ *
+ * @author Henry Pérez
+ * @version 1.0
+ * @since 05-02-2026
+ *
+ */
 function obtenerEmpleadosSeleccionados() {
     const checkboxes = document.querySelectorAll(".checkbox-empleado:checked");
     return Array.from(checkboxes).map((cb) => cb.value);

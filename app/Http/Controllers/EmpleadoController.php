@@ -8,12 +8,34 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class EmpleadoController extends Controller
 {
+    /**
+     * Listar empleados activos
+     * 
+     * @param $request {@link Request} - Parámetros de la solicitud (filtros, paginación, etc.)
+     * @return {@link View} - Vista con la lista de empleados activos
+     * 
+     * @author Henry Pérez
+     * @version 1.0
+     * @since 05-02-2026
+     * 
+     */
     public function listaEmpleados(Request $request) {
 
         $empleados = Empleado::where('estado', 1)->get();
         return view('empleados.empleado', compact('empleados'));
     }
 
+    /**
+     * Guardar nuevo empleado
+     * 
+     * @param $request {@link Request} - Parámetros de la solicitud (filtros, paginación, etc.)
+     * @return {@link View} - Vista con la lista de empleados activos
+     * 
+     * @author Henry Pérez
+     * @version 1.0
+     * @since 05-02-2026
+     * 
+     */
     public function guardar(Request $request) {
         try {
 
@@ -41,6 +63,17 @@ class EmpleadoController extends Controller
         }
     }
 
+    /**
+     * Eliminar (inactivar) empleado
+     * 
+     * @param $id {@link int} - ID del empleado a eliminar
+     * @return {@link View} - Vista con la lista de empleados activos
+     * 
+     * @author Henry Pérez
+     * @version 1.0
+     * @since 05-02-2026
+     * 
+     */
     public function eliminar($id) {
         try {
             $empleado = Empleado::findOrFail($id);
@@ -54,6 +87,17 @@ class EmpleadoController extends Controller
         }
     }
 
+    /**
+     * Generar código QR para empleados seleccionados
+     * 
+     * @param $request {@link Request} - Parámetros de la solicitud (filtros, paginación, etc.)
+     * @return {@link json} - Información sobre el resultado de la generación del QR
+     * 
+     * @author Henry Pérez
+     * @version 1.0
+     * @since 05-02-2026
+     * 
+     */
     public function generarQR(Request $request) {
         try {
             
