@@ -33,7 +33,7 @@ Sistema web desarrollado en Laravel para la gestión de empleados con generació
 
 ```bash
 git clone https://github.com/jenruco/qr-empleados.git
-cd sistema-empleados-qr
+cd qr-empleados
 ```
 
 ### 2. Instalar dependencias de PHP
