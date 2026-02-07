@@ -1,66 +1,231 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 📋 Sistema de Gestión de Empleados con QR
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Sistema web desarrollado en Laravel para la gestión de empleados con generación automática de códigos QR personalizados.
 
-## About Laravel
+## 🚀 Características
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- ✅ **Gestión de Empleados**: CRUD completo (Crear, Leer, Actualizar, Eliminar)
+- 🔍 **Búsqueda y Filtros**: Filtrado de empleados por nombre/apellido
+- 📱 **Generación de Códigos QR**: Creación automática de códigos QR únicos para cada empleado
+- 👁️ **Visualización de QR**: Modal para visualizar el código QR generado
+- 🗃️ **Gestión de Estados**: Sistema de activación/desactivación de empleados (soft delete)
+- 📊 **Auditoría**: Registro de fechas y usuarios de creación/modificación
+- 🎨 **Interfaz Moderna**: UI responsive con Bootstrap 5 y SweetAlert2
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🛠️ Tecnologías Utilizadas
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Backend**: Laravel 9+
+- **Frontend**: Bootstrap 5, JavaScript (Vanilla)
+- **Base de Datos**: MySQL
+- **Generación de QR**: SimpleSoftwareIO/simple-qrcode
+- **Alertas**: SweetAlert2
 
-## Learning Laravel
+## 📋 Requisitos Previos
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- PHP >= 8.0
+- Composer
+- MySQL >= 5.7
+- Node.js y NPM (opcional, para compilación de assets)
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## 🔧 Instalación
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 1. Clonar el repositorio
 
-## Laravel Sponsors
+```bash
+git clone https://github.com/jenruco/qr-empleados.git
+cd sistema-empleados-qr
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+### 2. Instalar dependencias de PHP
 
-### Premium Partners
+```bash
+composer install
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+### 3. Configurar el archivo de entorno
 
-## Contributing
+```bash
+cp .env.example .env
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Edita el archivo `.env` y configura tu base de datos:
 
-## Code of Conduct
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=nombre_de_tu_base_de_datos
+DB_USERNAME=tu_usuario
+DB_PASSWORD=tu_contraseña
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 4. Ejecutar las migraciones
 
-## Security Vulnerabilities
+```bash
+php artisan migrate
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 5. Crear la carpeta pública para QR
 
-## License
+```bash
+mkdir -p public/qrs
+chmod 755 public/qrs
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 6. Iniciar el servidor de desarrollo
+
+```bash
+php artisan serve
+```
+
+La aplicación estará disponible en: `http://localhost:8000`
+
+## 📁 Estructura del Proyecto
+
+```
+├── app/
+│   ├── Http/
+│   │   └── Controllers/
+│   │       └── EmpleadoController.php    # Controlador principal
+│   └── Models/
+│       ├── Empleado.php                   # Modelo de Empleado
+│       └── QrEmpleado.php                 # Modelo de QR
+├── database/
+│   └── migrations/
+│       └── 2026_02_06_212643_create_empleados_table.php
+├── public/
+│   ├── qrs/                               # Almacenamiento de códigos QR
+│   └── js/
+│       └── empleados.js                   # JavaScript del módulo
+├── resources/
+│   └── views/
+│       └── empleados/
+│           └── empleado.blade.php         # Vista principal
+└── routes/
+    └── web.php                            # Definición de rutas
+```
+
+## 🗄️ Estructura de Base de Datos
+
+### Tabla: `empleados`
+
+| Campo        | Tipo         | Descripción                      |
+| ------------ | ------------ | -------------------------------- |
+| id           | BIGINT       | ID único (PK)                    |
+| nombres      | VARCHAR(255) | Nombres del empleado             |
+| apellidos    | VARCHAR(255) | Apellidos del empleado           |
+| departamento | VARCHAR(100) | Departamento al que pertenece    |
+| email        | VARCHAR(255) | Correo electrónico               |
+| telefono     | VARCHAR(20)  | Número de teléfono               |
+| estado       | BOOLEAN      | 1=Activo, 0=Inactivo             |
+| fe_creacion  | TIMESTAMP    | Fecha de creación                |
+| usr_creacion | VARCHAR(100) | Usuario que creó el registro     |
+| fe_ult_mod   | TIMESTAMP    | Fecha de última modificación     |
+| usr_ult_mod  | VARCHAR(100) | Usuario que modificó el registro |
+
+### Tabla: `qr_empleados`
+
+| Campo        | Tipo         | Descripción                      |
+| ------------ | ------------ | -------------------------------- |
+| id           | BIGINT       | ID único (PK)                    |
+| empleado_id  | BIGINT       | ID del empleado (FK)             |
+| qr_imagen    | VARCHAR(500) | Ruta de la imagen QR             |
+| estado       | BOOLEAN      | 1=Activo, 0=Inactivo             |
+| fe_creacion  | TIMESTAMP    | Fecha de creación                |
+| usr_creacion | VARCHAR(100) | Usuario que creó el registro     |
+| fe_ult_mod   | TIMESTAMP    | Fecha de última modificación     |
+| usr_ult_mod  | VARCHAR(100) | Usuario que modificó el registro |
+
+## 🔌 API / Rutas Principales
+
+| Método | Ruta               | Descripción                   |
+| ------ | ------------------ | ----------------------------- |
+| GET    | `/`                | Lista de empleados            |
+| POST   | `/guardar`         | Crear nuevo empleado          |
+| DELETE | `/eliminar/{id}`   | Eliminar (inactivar) empleado |
+| POST   | `/generar-qr`      | Generar QR para empleados     |
+| GET    | `/obtener-qr/{id}` | Obtener QR de un empleado     |
+
+## 💡 Funcionalidades Principales
+
+### Registrar Nuevo Empleado
+
+1. Click en el botón "Nuevo Empleado"
+2. Llenar el formulario con los datos requeridos
+3. Click en "Guardar Empleado"
+4. Se muestra confirmación de éxito
+
+### Generar Código QR
+
+1. Seleccionar uno o varios empleados usando los checkboxes
+2. Click en "Generar QR"
+3. Los códigos QR se generan automáticamente en formato SVG
+4. Se almacenan en `public/qrs/empleado_{id}.svg`
+
+### Ver Código QR
+
+1. Click en el botón "Ver QR" del empleado deseado
+2. Se abre un modal mostrando el código QR generado
+3. El QR contiene el identificador único del empleado
+
+### Eliminar Empleado
+
+1. Click en el botón "Eliminar" del empleado
+2. Confirmar la acción en la alerta de SweetAlert
+3. El empleado se marca como inactivo (soft delete)
+
+### Buscar Empleados
+
+1. Ingresar el nombre o apellido en el campo de búsqueda
+2. Los resultados se filtran automáticamente
+
+## 🎨 Capturas de Pantalla
+
+_Aquí puedes agregar capturas de pantalla de tu aplicación_
+
+## 🔐 Seguridad
+
+- ✅ Protección CSRF en todos los formularios
+- ✅ Validación de datos en el servidor
+- ✅ Soft delete para mantener histórico
+- ✅ Auditoría de cambios (usuario y fecha)
+
+## 🚧 Mejoras Futuras
+
+- [ ] Sistema de autenticación de usuarios
+- [ ] Exportación de datos a Excel/PDF
+- [ ] Carga masiva de empleados via CSV
+- [ ] Dashboard con estadísticas
+- [ ] API RESTful completa
+- [ ] Descarga de códigos QR en diferentes formatos
+- [ ] Impresión masiva de credenciales con QR
+- [ ] Paginación de resultados
+
+## 🤝 Contribuciones
+
+Las contribuciones son bienvenidas. Para cambios importantes:
+
+1. Fork el proyecto
+2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abre un Pull Request
+
+## 📝 Licencia
+
+Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
+
+## 👤 Autor
+
+**Henry Pérez**
+
+- GitHub: [@jenruco](https://github.com/jenruco)
+- Email: henry_5198@hotmail.com
+
+## 📞 Soporte
+
+Si tienes alguna pregunta o problema, por favor abre un [issue](https://github.com/jenruco/qr-empleados/issues).
+
+---
+
+⭐ Si este proyecto te fue útil, considera darle una estrella en GitHub!
