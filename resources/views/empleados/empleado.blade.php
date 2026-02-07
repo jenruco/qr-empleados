@@ -74,7 +74,7 @@
                             <td>{{ $empleado['email'] }}</td>
                             <td>{{ $empleado['telefono'] }}</td>
                             <td>
-                                <button class="btn btn-sm btn-warning">Editar</button>
+                                <button class="btn btn-sm btn-warning btn-editar-empleado" data-id="{{ $empleado->id }}">Editar</button>
 
                                 <form action="{{ route('empleado.eliminar', $empleado->id) }}"
                                         method="POST"

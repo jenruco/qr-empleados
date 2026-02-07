@@ -7,6 +7,16 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
+    const btnEditarEmple = document.querySelectorAll(".btn-editar-empleado");
+    if (btnEditarEmple) {
+        btnEditarEmple.forEach((btn) => {
+            btn.addEventListener("click", function () {
+                const idEmpleado = btn.dataset.id;
+                verModalEditarEmpleado(idEmpleado);
+            });
+        });
+    }
+
     const btnVerQR = document.querySelectorAll(".btn-ver-qr");
     if (btnVerQR) {
         btnVerQR.forEach((btn) => {
@@ -104,7 +114,7 @@ function mostrarFlashMensajes() {
  *
  */
 function generarQR(idsEmpleados) {
-    fetch("/generar-qr", {
+    fetch("/empleados/generar-qr", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -148,13 +158,23 @@ function obtenerEmpleadosSeleccionados() {
     return Array.from(checkboxes).map((cb) => cb.value);
 }
 
+/**
+ * Presenta el QR de un empleado en un modal.
+ *
+ * @param idEmpleado ID del empleado cuyo QR se desea visualizar.
+ *
+ * @author Henry Pérez
+ * @version 1.0
+ * @since 05-02-2026
+ *
+ */
 function verQR(idEmpleado) {
     const qrCodeContainer = document.getElementById("qrCodeContainer");
     if (qrCodeContainer) {
         qrCodeContainer.innerHTML = "";
 
         // Obtener Qr de la DB
-        fetch("/obtener-qr/" + idEmpleado, {
+        fetch("/empleados/obtener-qr/" + idEmpleado, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -194,4 +214,73 @@ function verQR(idEmpleado) {
                 });
             });
     }
+}
+
+/**
+ * Presenta el modal para editar un empleado, cargando su información en el formulario.
+ *
+ * @param idEmpleado ID del empleado que se desea editar.
+ *
+ * @author Henry Pérez
+ * @version 1.0
+ * @since 05-02-2026
+ *
+ */
+function verModalEditarEmpleado(idEmpleado) {
+    const modalElement = document.getElementById("modalNuevoEmpleado");
+    if (!modalElement) {
+        Swal.fire({
+            icon: "error",
+            title: "¡Error!",
+            text: "No se encontró el modal para editar el empleado.",
+        });
+        return;
+    }
+
+    // Obtener información del empleado
+    fetch("/empleados/" + idEmpleado, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')
+                .content,
+            Accept: "application/json",
+        },
+    })
+        .then((res) => res.json())
+        .then((data) => {
+            if (data.success) {
+                document.getElementById("modalNuevoEmpleadoLabel").textContent =
+                    "Editar Empleado";
+
+                document.getElementById("idEmpleado").value = idEmpleado;
+
+                document.getElementById("nombres").value =
+                    data.empleado.nombres;
+                document.getElementById("apellidos").value =
+                    data.empleado.apellidos;
+                document.getElementById("email").value = data.empleado.email;
+                document.getElementById("telefono").value =
+                    data.empleado.telefono;
+                document.getElementById("departamento").value =
+                    data.empleado.departamento;
+
+                const modal = new bootstrap.Modal(modalElement);
+                modal.show();
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "¡Error!",
+                    text: data.message,
+                });
+            }
+        })
+        .catch((error) => {
+            console.error("Error al generar QR:", error);
+            Swal.fire({
+                icon: "error",
+                title: "¡Error!",
+                text: "Ocurrió un error al generar el QR. Por favor, intenta nuevamente.",
+            });
+        });
 }

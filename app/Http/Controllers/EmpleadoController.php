@@ -63,19 +63,46 @@ class EmpleadoController extends Controller
                 'telefono' => 'required|string|max:20',
             ]);
 
-            $empleado = new Empleado();
+            $id = $request->idEmpleado;
+            if(!empty($id)) {
+                $empleado = Empleado::findOrFail($id);
+                $empleado->usr_ult_mod = 'admin'; //user en sesión
+            } else {
+                $empleado = new Empleado();
+                $empleado->usr_creacion = 'admin'; //user en sesión
+            }
+
             $empleado->nombres = $validated['nombres'];
             $empleado->apellidos = $validated['apellidos'];
             $empleado->departamento = $validated['departamento'];
             $empleado->email = $validated['email'];
             $empleado->telefono = $validated['telefono'];
-            $empleado->usr_creacion = 'admin'; //user en sesión
 
             $empleado->save();
             
             return redirect('/')->with('success', 'Empleado guardado exitosamente');
         } catch (\Exception $e) {
             return redirect('/')->with('error', 'Error al guardar el empleado: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Obtener información de un empleado específico
+     * 
+     * @param $id {@link int} - ID del empleado a obtener
+     * @return {@link json} - Información del empleado solicitado
+     * 
+     * @author Henry Pérez
+     * @version 1.0
+     * @since 05-02-2026
+     * 
+     */
+    public function obtenerEmpleado($id) {
+        try {
+            $empleado = Empleado::findOrFail($id);
+            return response()->json(['success' => true, 'empleado' => $empleado]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Error al obtener el empleado: ' . $e->getMessage()]);
         }
     }
 
@@ -147,6 +174,17 @@ class EmpleadoController extends Controller
         }
     }
 
+    /**
+     * Obtiene el Qr generado para un empleado específico
+     * 
+     * @param $id {@link int} - ID del empleado para el cual se busca el QR
+     * @return {@link json} - Información sobre el resultado del QR
+     * 
+     * @author Henry Pérez
+     * @version 1.0
+     * @since 05-02-2026
+     * 
+     */
     public function obtenerQR($id) {
         try {
             $qrEmpleado = QrEmpleado::where('empleado_id', $id)->where('estado', 1)->first();

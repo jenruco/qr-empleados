@@ -1,7 +1,7 @@
 <div class="modal fade" id="modalNuevoEmpleado" tabindex="-1" aria-labelledby="modalNuevoEmpleadoLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
-                    <form action="/guardar" method="POST">
+                    <form action="{{ route('empleado.guardar') }}" method="POST">
                         @csrf
                         
                         <div class="modal-header">
@@ -11,6 +11,11 @@
                         
                         <div class="modal-body">
                             <div class="row">
+
+                                <!-- IdEmpleado -->
+                                <input type="number" class="form-control" 
+                                            id="idEmpleado" name="idEmpleado" value="" hidden>
+                                            
                                 <!-- Nombres -->
                                 <div class="col-md-6 mb-3">
                                     <label for="nombres" class="form-label">Nombres <span class="text-danger">*</span></label>
