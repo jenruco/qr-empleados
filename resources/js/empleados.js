@@ -7,6 +7,16 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
+    const btnVerQR = document.querySelectorAll(".btn-ver-qr");
+    if (btnVerQR) {
+        btnVerQR.forEach((btn) => {
+            btn.addEventListener("click", function () {
+                const idEmpleado = btn.dataset.id;
+                verQR(idEmpleado);
+            });
+        });
+    }
+
     // Al hacer click en "Generar QR"
     const btnGenerarQR = document.getElementById("btn-generar-qr");
     if (btnGenerarQR) {
@@ -18,8 +28,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     title: "¡Atención!",
                     text: "Por favor, selecciona al menos un empleado para generar el QR.",
                 });
+            } else {
+                generarQR(empleadosSeleccionados);
             }
-            generarQR(empleadosSeleccionados);
         });
     }
 });
@@ -93,8 +104,6 @@ function mostrarFlashMensajes() {
  *
  */
 function generarQR(idsEmpleados) {
-    console.log("seleccionados: ", idsEmpleados);
-
     fetch("/generar-qr", {
         method: "POST",
         headers: {
@@ -115,11 +124,6 @@ function generarQR(idsEmpleados) {
             } else {
                 Swal.fire("¡Error!", data.message, "error");
             }
-
-            // aquí luego puedes:
-            // - abrir PDF
-            // - descargar ZIP
-            // - mostrar preview
         })
         .catch((error) => {
             console.error("Error al generar QR:", error);
@@ -142,4 +146,52 @@ function generarQR(idsEmpleados) {
 function obtenerEmpleadosSeleccionados() {
     const checkboxes = document.querySelectorAll(".checkbox-empleado:checked");
     return Array.from(checkboxes).map((cb) => cb.value);
+}
+
+function verQR(idEmpleado) {
+    const qrCodeContainer = document.getElementById("qrCodeContainer");
+    if (qrCodeContainer) {
+        qrCodeContainer.innerHTML = "";
+
+        // Obtener Qr de la DB
+        fetch("/obtener-qr/" + idEmpleado, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": document.querySelector(
+                    'meta[name="csrf-token"]',
+                ).content,
+                Accept: "application/json",
+            },
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                if (data.success) {
+                    const img = document.createElement("img");
+                    img.src = data.qr_imagen;
+                    img.alt = `QR del empleado`;
+
+                    qrCodeContainer.appendChild(img);
+
+                    const modalElement =
+                        document.getElementById("modalQrEmpleado");
+                    const modal = new bootstrap.Modal(modalElement);
+                    modal.show();
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "¡Error!",
+                        text: data.message,
+                    });
+                }
+            })
+            .catch((error) => {
+                console.error("Error al generar QR:", error);
+                Swal.fire({
+                    icon: "error",
+                    title: "¡Error!",
+                    text: "Ocurrió un error al generar el QR. Por favor, intenta nuevamente.",
+                });
+            });
+    }
 }

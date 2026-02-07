@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Empleados</title>
+    <title>QR Empleados</title>
+    <link rel="icon" type="image/png" href="{{ asset('codigo-qr.png') }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 </head>
@@ -20,143 +21,89 @@
 
     @Vite(['resources/js/app.js']) <!-- agrega para acceder a empleados.js -->
 
-    <div>
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h3>Empleados</h3>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNuevoEmpleado">
-                <i class="bi bi-plus-circle"></i> Nuevo Empleado
-            </button>
-            <button type="button" class="btn btn-primary" id="btn-generar-qr">
-                <i class="bi bi-plus-circle"></i> Generar QR
-            </button>
-        </div>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h3 class="mb-0">
+                <i class="bi bi-people-fill me-2"></i>Empleados
+            </h3>
+            <div class="d-flex flex-wrap mt-5">
+                <form action="{{ route('empleado.lista') }}"
+                                    method="GET">
+                    <div class="col-md-12 mb-3">
+                        <label for="nombresFiltro" class="form-label">Nombres</span></label>
+                        <input type="text" class="form-control" 
+                            id="nombresFiltro" name="nombresFiltro">
+                    </div>
 
-        <table class="table table-striped table-hover">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Departamento</th>
-                    <th>Email</th>
-                    <th>Teléfono</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($empleados as $empleado)
-                <tr>
-                    <td>{{ $empleado['id'] }}</td>
-                    <td>{{ $empleado->nombres }} {{ $empleado['apellidos'] }}</td>
-                    <td>{{ $empleado['departamento'] }}</td>
-                    <td>{{ $empleado['email'] }}</td>
-                    <td>{{ $empleado['telefono'] }}</td>
-                    <td>
-                        <button class="btn btn-sm btn-warning">Editar</button>
-
-                        <form action="{{ route('empleado.eliminar', $empleado->id) }}"
-                                method="POST"
-                                class="form-eliminar d-inline">
-                                @csrf
-                                @method('DELETE')
-                            <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
-                        </form>
-
-                        <div class="form-check">
-                            <input class="form-check-input checkbox-empleado" 
-                                type="checkbox"
-                                name="empleados_seleccionados[]" 
-                                value="{{ $empleado->id }}" 
-                                id="empleado-{{ $empleado->id }}">
-                        </div>
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-
-        <div class="modal fade" id="modalNuevoEmpleado" tabindex="-1" aria-labelledby="modalNuevoEmpleadoLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <form action="/guardar" method="POST">
-                        @csrf
-                        
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="modalNuevoEmpleadoLabel">Nuevo Empleado</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        
-                        <div class="modal-body">
-                            <div class="row">
-                                <!-- Nombres -->
-                                <div class="col-md-6 mb-3">
-                                    <label for="nombres" class="form-label">Nombres <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control @error('nombres') is-invalid @enderror" 
-                                        id="nombres" name="nombres" value="{{ old('nombres') }}" required>
-                                    @error('nombres')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                <!-- Apellidos -->
-                                <div class="col-md-6 mb-3">
-                                    <label for="apellidos" class="form-label">Apellidos <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control @error('apellidos') is-invalid @enderror" 
-                                        id="apellidos" name="apellidos" value="{{ old('apellidos') }}" required>
-                                    @error('apellidos')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                <!-- Departamento -->
-                                <div class="col-md-6 mb-3">
-                                    <label for="departamento" class="form-label">Departamento <span class="text-danger">*</span></label>
-                                    <select class="form-select @error('departamento') is-invalid @enderror" 
-                                            id="departamento" name="departamento" required>
-                                        <option value="">Seleccione un departamento</option>
-                                        <option value="Recursos Humanos" {{ old('departamento') == 'Recursos Humanos' ? 'selected' : '' }}>Recursos Humanos</option>
-                                        <option value="Sistemas" {{ old('departamento') == 'Sistemas' ? 'selected' : '' }}>Sistemas</option>
-                                        <option value="Contabilidad" {{ old('departamento') == 'Contabilidad' ? 'selected' : '' }}>Contabilidad</option>
-                                        <option value="Ventas" {{ old('departamento') == 'Ventas' ? 'selected' : '' }}>Ventas</option>
-                                        <option value="Operaciones" {{ old('departamento') == 'Operaciones' ? 'selected' : '' }}>Operaciones</option>
-                                    </select>
-                                    @error('departamento')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                <!-- Email -->
-                                <div class="col-md-6 mb-3">
-                                    <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
-                                    <input type="email" class="form-control @error('email') is-invalid @enderror" 
-                                        id="email" name="email" value="{{ old('email') }}" required>
-                                    @error('email')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                <!-- Teléfono -->
-                                <div class="col-md-6 mb-3">
-                                    <label for="telefono" class="form-label">Teléfono</label>
-                                    <input type="tel" class="form-control @error('telefono') is-invalid @enderror" 
-                                        id="telefono" name="telefono" value="{{ old('telefono') }}" 
-                                        placeholder="0999999999">
-                                    @error('telefono')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="submit" class="btn btn-primary">Guardar Empleado</button>
-                        </div>
-                    </form>
+                    <button class="btn btn-primary">
+                        <i class="bi bi-plus-circle"></i> Buscar
+                    </button>
+                    <a href="{{ route('empleado.lista') }}" class="btn btn-primary">
+                        <i class="bi bi-x-circle"></i> Limpiar
+                    </a>
+                </form>
+                
+            </div>
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+                <div class="d-flex gap-2 ms-auto">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNuevoEmpleado">
+                        <i class="bi bi-plus-circle"></i> Nuevo Empleado
+                    </button>
+                    <button type="button" class="btn btn-primary" id="btn-generar-qr">
+                        <i class="bi bi-plus-circle"></i> Generar QR
+                    </button>
                 </div>
+
+                <table class="table table-striped table-hover" style="table-layout: fixed; width: 100%;">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Departamento</th>
+                            <th>Email</th>
+                            <th>Teléfono</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($empleados as $empleado)
+                        <tr>
+                            <td>{{ $empleado['id'] }}</td>
+                            <td>{{ $empleado->nombres }} {{ $empleado['apellidos'] }}</td>
+                            <td>{{ $empleado['departamento'] }}</td>
+                            <td>{{ $empleado['email'] }}</td>
+                            <td>{{ $empleado['telefono'] }}</td>
+                            <td>
+                                <button class="btn btn-sm btn-warning">Editar</button>
+
+                                <form action="{{ route('empleado.eliminar', $empleado->id) }}"
+                                        method="POST"
+                                        class="form-eliminar d-inline">
+                                        @csrf
+                                        @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
+                                </form>
+
+                                <button class="btn btn-sm btn-warning btn-ver-qr" data-id="{{ $empleado->id }}">Ver QR</button>
+
+                                <div class="form-check">
+                                    <input class="form-check-input checkbox-empleado" 
+                                        type="checkbox"
+                                        name="empleados_seleccionados[]" 
+                                        value="{{ $empleado->id }}" 
+                                        id="empleado-{{ $empleado->id }}">
+                                </div>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 
+    @include('empleados.modal.modal-crea-empleado', ['titulo' => 'Crear Empleado'])
+    @include('empleados.modal.modal-qr-empleado', ['titulo' => 'QR Empleado'])
 </body>
 
 </html>

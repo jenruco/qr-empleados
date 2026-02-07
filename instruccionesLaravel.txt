@@ -1,0 +1,25 @@
+Laravel:
+Crear proyecto: composer create-project laravel/laravel nombreProyecto
+
+sincronizar tablas: php artisan migrate
+
+rollback a migración: php artisan migrate:rollback
+
+iniciar aplicación: php artisan serve
+
+crear controlador: php artisan make:controller SumaController
+
+crear tabla/modelo con migración: php artisan make:model Producto -m
+
+crear tabla/modelo sin migración: php artisan make:model Producto
+
+
+Para usar Vite:
+en proyecto: npm i
+	     npm run dev
+
+Librería para qr en laravel: composer require simplesoftwareio/simple-qrcode 4.2.0
+
+NOTA: si da error por gd ir a php.ini y descomentar extension=gd
+
+composer remove simplesoftwareio/simple-qrcode

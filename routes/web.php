@@ -19,10 +19,12 @@ use App\Http\Controllers\EmpleadoController;
 });*/
 
 
-Route::get('/', [EmpleadoController::class, 'listaEmpleados']);
+Route::get('/', [EmpleadoController::class, 'listaEmpleados'])->name('empleado.lista');
 
 Route::post('/guardar', [EmpleadoController::class, 'guardar']);
 
 Route::delete('/eliminar/{id}', [EmpleadoController::class, 'eliminar'])->name('empleado.eliminar');
 
 Route::post('/generar-qr', [EmpleadoController::class, 'generarQR'])->name('empleado.generarQR');
+
+Route::get('obtener-qr/{id}', [EmpleadoController::class, 'obtenerQR'])->name('empleado.obtenerQR');

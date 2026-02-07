@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Models\Empleado;
+use App\Models\QrEmpleado;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class EmpleadoController extends Controller
@@ -21,7 +23,21 @@ class EmpleadoController extends Controller
      */
     public function listaEmpleados(Request $request) {
 
+        // Log::info('Nombres recibidos: ' . $request->nombresFiltro);
+        $nombresFiltro = $request->nombresFiltro;
+
+
         $empleados = Empleado::where('estado', 1)->get();
+
+        if(!empty($nombresFiltro)) {
+            $empleados = Empleado::where('estado', 1)
+                            ->where(function($query) use ($nombresFiltro) {
+                                $query->where('nombres', 'like', '%' . $nombresFiltro . '%')
+                                      ->orWhere('apellidos', 'like', '%' . $nombresFiltro . '%');
+                            })
+                            ->get();
+        }
+
         return view('empleados.empleado', compact('empleados'));
     }
 
@@ -104,17 +120,43 @@ class EmpleadoController extends Controller
             $ids = $request->ids;
 
             foreach($ids as $id) {
+                $qrEmpleadoExistente = QrEmpleado::where('empleado_id', $id)->first();
+                if(!empty($qrEmpleadoExistente)) {
+                    $qrEmpleadoExistente->estado = 0;
+                    $qrEmpleadoExistente->usr_ult_mod = 'admin';
+                    $qrEmpleadoExistente->save();
+                }
+                $url = "/qrs/empleado_$id.svg";
                 QrCode::format('svg')
                             ->size(300)
                             ->generate(
                                 "EMP:$id",
-                                public_path("/qrs/empleado_$id.svg")
+                                public_path($url)
                             );
+
+                $qrEmpleado = new QrEmpleado();
+                $qrEmpleado->empleado_id = $id;
+                $qrEmpleado->qr_imagen = $url;
+                $qrEmpleado->usr_creacion = 'admin';
+                $qrEmpleado->save();
             }
 
-            return response()->json(['success' => true, 'message' => 'QR generado exitosamente ' . implode(', ', $ids)]);
+            return response()->json(['success' => true, 'message' => 'QR generado exitosamente']);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Error al generar el QR: ' . $e->getMessage()]);
+        }
+    }
+
+    public function obtenerQR($id) {
+        try {
+            $qrEmpleado = QrEmpleado::where('empleado_id', $id)->where('estado', 1)->first();
+            if($qrEmpleado) {
+                return response()->json(['success' => true, 'qr_imagen' => $qrEmpleado->qr_imagen]);
+            } else {
+                return response()->json(['success' => false, 'message' => 'QR no encontrado para el empleado']);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Error al obtener el QR: ' . $e->getMessage()]);
         }
     }
 }
