@@ -1,0 +1,32 @@
+descargar imagen: docker pull <imagen>
+eliminar imagen: docker image rm <id>
+crear contenedor: docker container create <mongo>
+		  docker create -p27017:27017 --name mongito mongo
+		  docker create -p27017:27017 --name mongito --network <nombreRed> -e MONGO_INITDB_ROOT_USERNAME=henry -e MONGO_INITDB_ROOT_PASSWORD=pass mongo
+
+iniciar contenedor: docker start <idContenedor>
+detener contenedor: docker stop <idContenedor>
+eliminar contenedor docker rm <idContenedor>
+ver redes de Docker: docker network ls
+crear red: docker network create <nombrered>
+eliminar red: docker network rm <nombrered>
+crear imagen a partir de un app: docker build -t miapp:1 .
+conectar contenedor a una red: docker network connect <nombreRed> <idContenedor>
+ver las redes a las que esta conectado un contenedor: Docker inspect <idContenedor>
+ver logs de un contenedor: Docker logs --follow <idContenedor>
+levantar servicios con docker-compose.yml: docker compose up
+levantar servicios con docker-compose.yml configurado: docker compose -f docker-compose-dev.yml up
+entrar en un contenedor: docker compose exec <nombreServiceDockerComposeYml> sh
+
+
+
+docker create -p27017:27017 --name mongito --network <nombreRed> -e MONGO_INITDB_ROOT_USERNAME=henry -e MONGO_INITDB_ROOT_PASSWORD=pass mongo
+
+
+#crear contenedor de MySQL:
+docker create --name mysql-db -p 3306:3306 -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=empleadoqr -e MYSQL_USER=jenruco -e MYSQL_PASSWORD=jenruco MySQL
+
+
+#levantar contenedor con app laravel
+
+docker run -d --name laravel-app --network redjenruco -p 8080:80 --env-file .env.docker laravel-app
