@@ -23,3 +23,8 @@ Librería para qr en laravel: composer require simplesoftwareio/simple-qrcode 4.
 NOTA: si da error por gd ir a php.ini y descomentar extension=gd
 
 composer remove simplesoftwareio/simple-qrcode
+
+
+ver log en laravel: Get-Content storage\logs\laravel.log -Wait
+
+

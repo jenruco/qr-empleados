@@ -30,3 +30,10 @@ docker create --name mysql-db -p 3306:3306 -e MYSQL_ROOT_PASSWORD=root -e MYSQL_
 #levantar contenedor con app laravel
 
 docker run -d --name laravel-app --network redjenruco -p 8080:80 --env-file .env.docker laravel-app
+
+#entrar a contenedor MySQL: docker exec -it mysql-db mysql -u jenruco -p
+
+crear base de datos facturacion con user: root
+
+dar permiso a jenruco: GRANT ALL PRIVILEGES ON facturacion.* TO 'jenruco'@'%';
+		       FLUSH PRIVILEGES;
