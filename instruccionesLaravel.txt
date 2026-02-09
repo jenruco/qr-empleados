@@ -13,6 +13,7 @@ crear tabla/modelo con migración: php artisan make:model Producto -m
 
 crear tabla/modelo sin migración: php artisan make:model Producto
 
+crear test: php artisan make:test GuardarFacturaTest
 
 Para usar Vite:
 en proyecto: npm i
